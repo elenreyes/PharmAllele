@@ -1,27 +1,72 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <title>
-            PharmAllele
-        </title>
-        <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
-    </head>
-    <body>
-        <h1>Welcome to PharmAllele!</h1>
-        <form class="search-panel">
-            <input type="text" placeholder="Search gene, drug, variant" name = "query">
-            <button type="submit">Search</button>
-        </form>
-        <p>Coming soon...</p>
+<html lang="en">
+<head>
+    <title>PharmAllele</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 30px;
+        }
 
-        <footer>
-            <p><strong>PharmAllele</strong></p>
-            <p>Contact: pharmallele@gmail.com</p>
-            <p>
-                <a> About</a>
-                <a> Privacy policy</a>
-            </p>
-            <p>© 2026 PharmAllele. All rights reserved.</p>
-        </footer>
-    </body>
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        /* Formulario horizontal */
+        .search-panel {
+            display: flex;
+            gap: 10px;       /* Espacio entre cajas */
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .search-panel input[type="text"] {
+            padding: 8px;
+            font-size: 16px;
+            width: 200px;
+        }
+
+        .search-panel button {
+            padding: 8px 16px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        footer {
+            margin-top: 50px;
+            font-size: 14px;
+            color: #555;
+        }
+
+        footer a {
+            margin-right: 10px;
+            text-decoration: none;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <h1>Welcome to PharmAllele!</h1>
+
+    <!-- Un único formulario con tres campos -->
+    <form class="search-panel" action="/buscar" method="GET">
+        <input type="text" placeholder="Search gene" name="gene">
+        <input type="text" placeholder="Search variant" name="variant">
+        <input type="text" placeholder="Search drug" name="drug">
+        <button type="submit">Search</button>
+    </form>
+
+    <p>Coming soon...</p>
+
+    <footer>
+        <p><strong>PharmAllele</strong></p>
+        <p>Contact: pharmallele@gmail.com</p>
+        <p>
+            <a>About</a>
+            <a>Privacy policy</a>
+        </p>
+        <p>© 2026 PharmAllele. All rights reserved.</p>
+    </footer>
+</body>
 </html>
