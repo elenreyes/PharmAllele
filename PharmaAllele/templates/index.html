@@ -58,7 +58,22 @@
     </form>
 
     <p>Coming soon...</p>
-<footer>
+     <!-- LEYRE-->>
+    <p><a href="/drugs">Ver lista de fármacos</a></p>
+    <hr>
+    <h3>Buscador de Fármacos</h3>
+    <form action="/buscar_drugs" method="POST">
+      <input type="text" name="nombre_droga" placeholder="Search drug (e.g. Warfarin)..." required>
+      <button type="submit">Buscar</button>
+    </form>
+    <hr>
+    <h3>Buscador de Genes</h3>
+    <form action="/buscar_genes" method="POST">
+      <input type="text" name="nombre_gen" placeholder="Search gene (e.g. RGS4)..." required>
+      <button type="submit">Buscar</button>
+    </form>
+    <!-- LEYRE-->>
+    <footer>
         <p><strong>PharmAllele</strong></p>
         <p>Contact: pharmallele@gmail.com</p>
         <p>
