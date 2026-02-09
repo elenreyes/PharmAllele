@@ -49,13 +49,13 @@
 <body>
     <h1>Welcome to PharmAllele!</h1>
 
-    <!-- Un único formulario con tres campos -->
+    <!-- Un único formulario con tres campos 
     <form class="search-panel" action="/buscar" method="GET">
         <input type="text" placeholder="Search gene" name="gene">
         <input type="text" placeholder="Search variant" name="variant">
         <input type="text" placeholder="Search drug" name="drug">
         <button type="submit">Search</button>
-    </form>
+    </form> -->
 
     <p>Coming soon...</p>
      <!-- LEYRE-->>
@@ -72,6 +72,14 @@
       <input type="text" name="nombre_gen" placeholder="Search gene (e.g. RGS4)..." required>
       <button type="submit">Buscar</button>
     </form>
+    <div style="border: 1px solid #ccc; padding: 15px; margin-top: 20px;">
+        <h3>Buscador Combinado (Fármaco + Variante)</h3>
+        <form action="/search" method="GET">
+            <input type="text" name="drug" placeholder="Nombre del fármaco...">
+            <input type="text" name="variant" placeholder="Nombre de la variante...">
+            <button type="submit">Buscar Combinación</button>
+        </form>
+    </div>
     <!-- LEYRE-->>
     <footer>
         <p><strong>PharmAllele</strong></p>

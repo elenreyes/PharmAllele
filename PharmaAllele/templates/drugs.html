@@ -18,19 +18,30 @@
     <table>
         <thead>
             <tr>
+                {# 1. Bucle para las cabeceras #}
                 {% for col in columnas %}
-                <th>{{ col }}</th>
+                    <th>{{ col }}</th>
                 {% endfor %}
             </tr>
         </thead>
         <tbody>
+            {# 2. Bucle para las FILAS #}
             {% for fila in filas %}
             <tr>
-                {% for valor in fila %}
-                <td>{{ valor }}</td>
-                {% endfor %}
+                {# 3. Bucle para las COLUMNAS de cada fila #}
+                {% for col_name in columnas %}
+                <td>
+                    {% if col_name == 'drug_name' %}
+                        {# Si la columna es el nombre, ponemos el enlace #}
+                        <a href="/drugs/{{ fila[col_name] }}">{{ fila[col_name] }}</a>
+                    {% else %}
+                        {# Si no, mostramos el dato normal #}
+                        {{ fila[col_name] }}
+                    {% endif %}
+                </td>
+                {% endfor %} {# Cierre del bucle de columnas (3) #}
             </tr>
-            {% endfor %}
+            {% endfor %} {# Cierre del bucle de filas (2) #}
         </tbody>
     </table>
 </body>
