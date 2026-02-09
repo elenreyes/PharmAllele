@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Detalles de {{ droga.drug_name }}</title>
+    <style>
+        body { font-family: Arial; margin: 20px; }
+        .info-box { background: #eef; padding: 15px; border-radius: 5px; margin-bottom: 20px; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #ccc; padding: 10px; text-align: left; }
+        th { background: #333; color: white; }
+    </style>
+</head>
+<body>
+    <a href="/drugs">← Volver al listado completo</a>
+
+    <div class="info-box">
+        <h1>Drug: {{ droga.drug_name }}</h1>
+        <p><strong>Description:</strong> {{ droga.description }}</p>
+    </div>
+
+    <h2>Associated genetic variants</h2>
+    
+    {% if variantes %}
+    <table>
+        <thead>
+            <tr>
+                <th>Variant (ID)</th>
+                <th>Gene</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for v in variantes %}
+            <tr>
+                <td>{{ v.variant_name }}</td>
+                <td>{{ v.gene_gene_name }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No hay variantes registradas para este fármaco.</p>
+    {% endif %}
+</body>
+</html>

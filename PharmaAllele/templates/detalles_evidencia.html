@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Definición de Evidencia: {{ evidencia.evidence_category }}</title>
+    <style>
+        body { font-family: sans-serif; line-height: 1.6; margin: 40px; }
+        .info-card { 
+            border-left: 5px solid #4CAF50; 
+            background: #f4fbf4; 
+            padding: 20px; 
+            border-radius: 4px;
+            max-width: 600px;
+        }
+        h1 { color: #2e7d32; }
+    </style>
+</head>
+<body>
+    <a href="javascript:history.back()">← Volver a los resultados</a>
+
+    <div class="info-card">
+        <h1>Nivel de Evidencia: {{ evidencia.evidence_category }}</h1>
+        <p><strong>Significado :</strong></p>
+        <p>{{ evidencia.evidence_description }}</p>
+    </div>
+</body>
+</html>

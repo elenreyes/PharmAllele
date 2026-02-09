@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Resultados de búsqueda combinada</title>
+    <style>
+        table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        th { background: #4CAF50; color: white; }
+        .highlight { background-color: #f9f9d5; padding: 2px 5px; }
+    </style>
+</head>
+<body>
+    <h1>Results found</h1>
+    <p>Searching drugs as: <span class="highlight">{{ drug if drug else 'Cualquiera' }}</span> 
+       and variants as: <span class="highlight">{{ variant if variant else 'Cualquiera' }}</span></p>
+    
+    <a href="/">← Volver al buscador</a>
+
+    {% if results %}
+    <table>
+        <thead>
+            <tr>
+                <th>Drug</th>
+                <th>Variant</th>
+                <th>Phenotype category</th>
+                <th>Illness</th>
+                <th>Evidence</th>
+                <th>URL</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for res in results %}
+            <tr>
+                <td><a href="/drugs/{{ res.drug_name }}">{{ res.drugs_drug_name }}</a></td>
+                <td>{{ res.variants_variant_name }}</td>
+                <td>{{ res.phenotype_category_phenotype_category }}</td>
+                <td>{{ res.illness_illness_name }}</td>
+                <td>{{ res.evidence_category_evidence_category }}</td>                
+                <!-- POR CORREGIR:
+                 <td></td><a href="/evidence/{{ res.evidence_category }}">{{ res.evidence_category_evidence_category }}</a></td> -->> 
+                <td>{{ res.URL_web }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No se han encontrado asociaciones para esa combinación.</p>
+    {% endif %}
+</body>
+</html>
