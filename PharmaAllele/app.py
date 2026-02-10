@@ -32,7 +32,7 @@ def index():
     #result = db.session.execute(text("SELECT COUNT(*) FROM gene"))
     #total = result.fetchone()[0]
     
-    return render_template('index.html', cantidad=total)
+    return render_template('index.html', cantidad=0)  #cambiar a total
 
 # 4. 2º RUTA: BUSCAR DRUGS
 @app.route('/drugs')
