@@ -23,7 +23,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+mysqlconnector://{usuario_person
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['TITLE'] = 'Mi Farmacogenética'
 
-#db = SQLAlchemy(app)
+db = SQLAlchemy(app)
 
 # 3. Tu primera RUTA (La página de inicio)
 @app.route('/')
