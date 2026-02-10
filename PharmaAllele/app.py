@@ -4,7 +4,7 @@ import re
 import uuid
 import subprocess
 
-from flask import Flask, render_template, session, request, url_for, redirect
+from flask import Flask, render_template, session, request, url_for, redirect, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import text
 
