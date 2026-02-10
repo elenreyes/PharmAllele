@@ -29,8 +29,8 @@ db = SQLAlchemy(app)
 @app.route('/')
 def index():
     # Vamos a contar cuántos genes tienes para saber si funciona
-    result = db.session.execute(text("SELECT COUNT(*) FROM gene"))
-    total = result.fetchone()[0]
+    #result = db.session.execute(text("SELECT COUNT(*) FROM gene"))
+    #total = result.fetchone()[0]
     
     return render_template('index.html', cantidad=total)
 
