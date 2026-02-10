@@ -145,7 +145,12 @@ def search():
     # Convertimos a lista de diccionarios como le gusta a tu profesor
     results = [dict(zip(columnas, fila)) for fila in result.fetchall()]
 
-    return render_template("results.html", results=results, drug=drug_query, variant=variant_query)
+    # Si la petición viene de tu JavaScript (fetch), enviamos JSON
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest' or request.args.get('format') == 'json':
+        return jsonify(results)
+    
+    # Si es una búsqueda normal, enviamos el HTML de siempre
+    return render_template("results.html", results=results, drug=drug_query, variant=variant_query))
 
 
 #7. 6º RUTA: Busqueda de Evidence-Category
