@@ -12,8 +12,8 @@ from sqlalchemy import text
 app = Flask(__name__)
 
 # 1.2 Configuración de los datos de acceso
-usuario_personalizado = " "  
-password_personalizado = " "      
+usuario_personalizado = "root"  
+password_personalizado = "contraseña_mys_mysql"      
 host = "localhost"
 database = "mydb"
 
@@ -29,10 +29,10 @@ app.config['TITLE'] = 'Mi Farmacogenética'
 @app.route('/')
 def index():
     # Vamos a contar cuántos genes tienes para saber si funciona
-    #result = db.session.execute(text("SELECT COUNT(*) FROM gene"))
-    #total = result.fetchone()[0]
+    result = db.session.execute(text("SELECT COUNT(*) FROM gene"))
+    total = result.fetchone()[0]
     
-    return render_template('index.html', cantidad=0)  #cambiar a total
+    return render_template('index.html', cantidad=total)
 
 # 4. 2º RUTA: BUSCAR DRUGS
 @app.route('/drugs')
