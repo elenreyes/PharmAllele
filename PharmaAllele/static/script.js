@@ -1,43 +1,56 @@
 window.addEventListener('DOMContentLoaded', event => {
 
-    // --- 1. CONFIGURACIÓN DE LA TABLA (DataTables) ---
-    // Inicializamos la tabla para que cuando Elena la cargue, ya tenga buscador y paginación
+    // 1. Inicializar la tabla (vacia al principio)
     const table = $('#table-output').DataTable({
-        language: { url: 'https://cdn.datatables.net/plug-ins/1.13.1/i18n/es-ES.json' },
-        responsive: true,
-        columns: [
-            { title: "Gene" },
-            { title: "Variant" },
-            { title: "Drug" },
-            { title: "Significance" }
-        ]
+        language: { url: 'https://cdn.datatables.net/plug-ins/1.13.1/i18n/es-ES.json' }
     });
 
-    // --- 2. LÓGICA DE BÚSQUEDA ---
+    // 2. Localizar el formulario de Elena
     const searchForm = document.querySelector('.search-panel');
-    
+
     if (searchForm) {
         searchForm.addEventListener('submit', function (e) {
-            e.preventDefault(); // Evita que la página se refresque
+            // Evitamos que la página se recargue (esto es vital para que JS trabaje)
+            e.preventDefault(); 
 
-            // Capturamos lo que escribió el usuario en el HTML de Elena
-            const gene = document.querySelector('input[name="gene"]').value;
-            const variant = document.querySelector('input[name="variant"]').value;
+            // Recogemos lo que el usuario escribió
             const drug = document.querySelector('input[name="drug"]').value;
+            const variant = document.querySelector('input[name="variant"]').value;
 
-            // Validación simple: Si todo está vacío, avisamos
-            if (!gene && !variant && !drug) {
-                alert("Por favor, rellena al menos un campo para buscar.");
-                return;
-            }
+            console.log("Pidiendo datos a Flask para:", drug, variant);
 
-            console.log("Buscando datos para:", {gene, variant, drug});
-            
-            // Llamamos a la función que pide los datos al servidor
-            ejecutarBusqueda(gene, variant, drug);
+            // 3. LLAMADA AL BACKEND (app.py)
+            // Usamos format=json para que el Python sepa que somos nosotros (el JS)
+            fetch(`/search?drug=${drug}&variant=${variant}&format=json`)
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Datos recibidos:", data);
+                    
+                    // LIMPIAR Y RELLENAR TABLA
+                    table.clear();
+                    data.forEach(item => {
+                        table.row.add([
+                            item.drugs_drug_name,
+                            item.variants_variant_name,
+                            item.phenotype_category_phenotype_category,
+                            item.illness_illness_name
+                        ]);
+                    });
+                    table.draw();
+
+                    // DIBUJAR GRÁFICO CON PLOTLY
+                    const trace = {
+                        x: data.map(i => i.drugs_drug_name),
+                        y: data.map(i => i.variants_variant_name.length), // Un ejemplo visual
+                        type: 'bar',
+                        marker: {color: '#1abc9c'}
+                    };
+                    Plotly.newPlot('myDiv', [trace], {title: 'Resultados por Fármaco'});
+                })
+                .catch(error => console.error("Error en la búsqueda:", error));
         });
     }
-
+});
     // --- 3. FUNCIÓN FETCH (Conexión con MySQL vía PHP/Python) ---
     function ejecutarBusqueda(g, v, d) {
         // Aquí conectamos con el backend. Por ahora usamos datos de prueba (Mock)
