@@ -150,7 +150,7 @@ def search():
         return jsonify(results)
     
     # Si es una búsqueda normal, enviamos el HTML de siempre
-    return render_template("results.html", results=results, drug=drug_query, variant=variant_query))
+    return render_template("results.html", results=results, drug=drug_query, variant=variant_query)
 
 
 #7. 6º RUTA: Busqueda de Evidence-Category
