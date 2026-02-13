@@ -12,8 +12,8 @@ from sqlalchemy import text
 app = Flask(__name__)
 
 # 1.2 Configuración de los datos de acceso
-usuario_personalizado = " "  
-password_personalizado = " "      
+usuario_personalizado = "msotmon"  
+password_personalizado = "Msotmon.2003"      
 host = "localhost"
 database = "mydb"
 
@@ -23,7 +23,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+mysqlconnector://{usuario_person
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['TITLE'] = 'Mi Farmacogenética'
 
-#db = SQLAlchemy(app)
+db = SQLAlchemy(app)
 
 # 3. Tu primera RUTA (La página de inicio)
 @app.route('/')

@@ -1,107 +1,438 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-    <title>PharmAllele</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PharmAllele - Farmacogenética</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Fraunces:wght@600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --text-primary: #111827;
+            --text-secondary: #6b7280;
+            --text-muted: #9ca3af;
+            --border: #e5e7eb;
+            --background: #ffffff;
+            --background-secondary: #f9fafb;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --radius: 0.5rem;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            padding: 30px;
+            font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background-color: var(--background-secondary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            padding: 2rem 1rem;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        header {
+            margin-bottom: 3rem;
         }
 
         h1 {
-            margin-bottom: 20px;
+            font-family: 'Fraunces', serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.025em;
         }
 
-        /* Formulario horizontal */
-        .search-panel {
+        .subtitle {
+            font-size: 1.125rem;
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+
+        /* Main Card */
+        .card {
+            background: var(--background);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-md);
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-title {
+            font-family: 'Fraunces', serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+
+        /* Form Styles */
+        .form-container {
+            margin-bottom: 2rem;
+        }
+
+        .form-info {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        @media (min-width: 768px) {
+            .form-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .form-group {
             display: flex;
-            gap: 10px;       /* Espacio entre cajas */
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        label {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            letter-spacing: 0.01em;
+        }
+
+        label .optional {
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 0.625rem 0.75rem;
+            font-size: 0.875rem;
+            font-family: inherit;
+            color: var(--text-primary);
+            background: var(--background);
+            border: 1px solid var(--border);
+            border-radius: calc(var(--radius) - 2px);
+            transition: all 0.15s ease;
+            outline: none;
+        }
+
+        input[type="text"]::placeholder {
+            color: var(--text-muted);
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        input[type="text"]:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background-color: var(--background-secondary);
+        }
+
+        /* Button */
+        .btn {
+            display: inline-flex;
             align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .search-panel input[type="text"] {
-            padding: 8px;
-            font-size: 16px;
-            width: 200px;
-        }
-
-        .search-panel button {
-            padding: 8px 16px;
-            font-size: 16px;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.625rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            font-family: inherit;
+            color: white;
+            background-color: var(--primary);
+            border: none;
+            border-radius: calc(var(--radius) - 2px);
             cursor: pointer;
+            transition: all 0.15s ease;
+            box-shadow: var(--shadow-sm);
         }
 
+        .btn:hover:not(:disabled) {
+            background-color: var(--primary-hover);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn:active:not(:disabled) {
+            transform: translateY(1px);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-full {
+            width: 100%;
+        }
+
+        @media (min-width: 768px) {
+            .btn-auto {
+                width: auto;
+            }
+        }
+
+        /* Icon */
+        .icon-search {
+            width: 1rem;
+            height: 1rem;
+        }
+
+        /* Quick Link */
+        .quick-link {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--primary);
+            background-color: rgba(37, 99, 235, 0.05);
+            border: 1px solid rgba(37, 99, 235, 0.2);
+            border-radius: calc(var(--radius) - 2px);
+            text-decoration: none;
+            transition: all 0.15s ease;
+        }
+
+        .quick-link:hover {
+            background-color: rgba(37, 99, 235, 0.1);
+            border-color: rgba(37, 99, 235, 0.3);
+        }
+
+        /* Data Display */
+        #myDiv {
+            width: 100%;
+            height: 400px;
+            margin-top: 2rem;
+            background: var(--background-secondary);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+        }
+
+        .table-container {
+            margin-top: 2rem;
+            overflow-x: auto;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--background);
+        }
+
+        table thead {
+            background-color: var(--background-secondary);
+            border-bottom: 1px solid var(--border);
+        }
+
+        table th {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.875rem;
+            color: var(--text-primary);
+        }
+
+        table td {
+            padding: 0.75rem 1rem;
+            border-top: 1px solid var(--border);
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        table tbody tr:hover {
+            background-color: var(--background-secondary);
+        }
+
+        /* Footer */
         footer {
-            margin-top: 50px;
-            font-size: 14px;
-            color: #555;
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border);
+            text-align: center;
+            color: var(--text-secondary);
+        }
+
+        footer p {
+            margin: 0.5rem 0;
+            font-size: 0.875rem;
         }
 
         footer a {
-            margin-right: 10px;
+            color: var(--text-secondary);
             text-decoration: none;
-            color: #555;
+            transition: color 0.15s ease;
+        }
+
+        footer a:hover {
+            color: var(--primary);
+        }
+
+        .footer-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        /* Loading State */
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .btn.loading .icon-search {
+            animation: spin 1s linear infinite;
+        }
+
+        /* Divider */
+        .divider {
+            height: 1px;
+            background: var(--border);
+            margin: 2rem 0;
+        }
+
+        /* Responsive Typography */
+        @media (max-width: 640px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .subtitle {
+                font-size: 1rem;
+            }
+            
+            .card {
+                padding: 1.5rem;
+            }
         }
     </style>
 </head>
 <body>
-    <h1>Welcome to PharmAllele!</h1>
+    <div class="container">
+        <header>
+            <h1>PharmAllele</h1>
+            <p class="subtitle">Plataforma de información farmacogenética</p>
+        </header>
 
-    <!-- Un único formulario con tres campos 
-    <form class="search-panel" action="/buscar" method="GET">
-        <input type="text" placeholder="Search gene" name="gene">
-        <input type="text" placeholder="Search variant" name="variant">
-        <input type="text" placeholder="Search drug" name="drug">
-        <button type="submit">Search</button>
-    </form> -->
+        <!-- Main Search Form -->
+        <div class="card">
+            <h2 class="card-title">Búsqueda de Interacciones</h2>
+            <form id="main-search-form" class="form-container" action="/search" method="GET">
+                <p class="form-info">
+                    Puede buscar por fármaco, variante, o ambos campos simultáneamente
+                </p>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="drug">Fármaco <span class="optional">(opcional)</span></label>
+                        <input 
+                            type="text" 
+                            id="drug" 
+                            name="drug" 
+                            placeholder="ej. Warfarina, Clopidogrel"
+                        >
+                    </div>
+                    <div class="form-group">
+                        <label for="variant">Variante <span class="optional">(opcional)</span></label>
+                        <input 
+                            type="text" 
+                            id="variant" 
+                            name="variant" 
+                            placeholder="ej. rs1057910, rs4244285"
+                        >
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-full btn-auto" id="search-btn">
+                    <svg class="icon-search" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                    </svg>
+                    <span>Buscar</span>
+                </button>
+            </form>
+            
+            <a href="/drugs" class="quick-link">📋 Ver lista completa de fármacos</a>
+        </div>
 
-    <p>Coming soon...</p>
-     <!-- LEYRE-->>
-    <p><a href="/drugs">Ver lista de fármacos</a></p>
-    <hr>
-    <h3>Buscador de Fármacos</h3>
-    <form action="/buscar_drugs" method="POST">
-      <input type="text" name="nombre_droga" placeholder="Search drug (e.g. Warfarin)..." required>
-      <button type="submit">Buscar</button>
-    </form>
-    <hr>
-    <h3>Buscador de Genes</h3>
-    <form action="/buscar_genes" method="POST">
-      <input type="text" name="nombre_gen" placeholder="Search gene (e.g. RGS4)..." required>
-      <button type="submit">Buscar</button>
-    </form>
-    <div style="border: 1px solid #ccc; padding: 15px; margin-top: 20px;">
-        <h3>Buscador Combinado (Fármaco + Variante)</h3>
-        <form action="/search" method="GET">
-            <input type="text" name="drug" placeholder="Nombre del fármaco...">
-            <input type="text" name="variant" placeholder="Nombre de la variante...">
-            <button type="submit">Buscar Combinación</button>
-        </form>
+        <!-- Data Visualization -->
+        <div id="myDiv"></div>
+
+        <!-- Table Container -->
+        <div class="table-container" style="display: none;">
+            <table id="table-output">
+                <thead></thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <footer>
+            <p class="footer-title">PharmAllele</p>
+            <p>
+                <a href="mailto:pharmallele@gmail.com">pharmallele@gmail.com</a>
+            </p>
+            <p>© 2026 PharmAllele. Todos los derechos reservados.</p>
+        </footer>
     </div>
-    <!-- LEYRE-->>
-    <div id="myDiv" style="width:100%; height:400px;"></div>
-    <div class="container mt-4">
-        <table id="table-output" class="table table-striped" style="width:100%">
-            <thead>
-                </thead>
-        </table>
-    </div>
-    <footer>
-        <p><strong>PharmAllele</strong></p>
-        <p>Contact: pharmallele@gmail.com</p>
-        <p>
-            <a>About</a>
-            <a>Privacy policy</a>
-        </p>
-        <p>© 2026 PharmAllele. All rights reserved.</p>
-    </footer>
 
+    <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.plot.ly/plotly-2.12.1.min.js"></script>
-
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    
+    <script>
+        // Main search form validation and loading state
+        const mainForm = document.getElementById('main-search-form');
+        const drugInput = document.getElementById('drug');
+        const variantInput = document.getElementById('variant');
+        const searchBtn = document.getElementById('search-btn');
 
-</body> </html>
+        function updateButtonState() {
+            const drugValue = drugInput.value.trim();
+            const variantValue = variantInput.value.trim();
+            searchBtn.disabled = !drugValue && !variantValue;
+        }
+
+        drugInput.addEventListener('input', updateButtonState);
+        variantInput.addEventListener('input', updateButtonState);
+
+        // Initial state
+        updateButtonState();
+
+        // Loading states for all forms
+        document.querySelectorAll('form').forEach(form => {
+            form.addEventListener('submit', function(e) {
+                const btn = this.querySelector('button[type="submit"]');
+                const span = btn.querySelector('span');
+                
+                btn.classList.add('loading');
+                btn.disabled = true;
+                
+                if (span) {
+                    span.textContent = 'Buscando...';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
