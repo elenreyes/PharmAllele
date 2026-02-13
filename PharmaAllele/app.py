@@ -4,7 +4,7 @@ import re
 import uuid
 import subprocess
 
-from flask import Flask, render_template, session, request, url_for, redirect
+from flask import Flask, render_template, session, request, url_for, redirect, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import text
 
@@ -12,8 +12,13 @@ from sqlalchemy import text
 app = Flask(__name__)
 
 # 1.2 Configuración de los datos de acceso
+<<<<<<< HEAD
 usuario_personalizado = "msotmon"  
 password_personalizado = "Msotmon.2003"      
+=======
+usuario_personalizado = "root"  
+password_personalizado = "contraseña_mys_mysql"      
+>>>>>>> 1d022aef7b1d6a7efb0ff8af935d181be9a5c743
 host = "localhost"
 database = "mydb"
 
@@ -29,10 +34,10 @@ db = SQLAlchemy(app)
 @app.route('/')
 def index():
     # Vamos a contar cuántos genes tienes para saber si funciona
-    #result = db.session.execute(text("SELECT COUNT(*) FROM gene"))
-    #total = result.fetchone()[0]
+    result = db.session.execute(text("SELECT COUNT(*) FROM gene"))
+    total = result.fetchone()[0]
     
-    return render_template('index.html', cantidad=0)  #cambiar a total
+    return render_template('index.html', cantidad=total)
 
 # 4. 2º RUTA: BUSCAR DRUGS
 @app.route('/drugs')
