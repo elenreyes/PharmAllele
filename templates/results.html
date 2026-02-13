@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Resultados de búsqueda combinada</title>
+    
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- DataTables -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css">
+    <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
+
+    <!-- Plotly -->
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+
+        table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+
+        th { background: linear-gradient(90deg,#3b82f6,#7c3aed); color: white; }
+
+        tr:nth-child(even) { background: #f9fafb; }
+        tr:hover { background: #eef2ff; }
+
+        .highlight { background-color: #fef3c7; padding: 2px 6px; border-radius: 4px; }
+
+        .variant {
+            background: #ede9fe;
+            color: #5b21b6;
+            padding: 3px 6px;
+            border-radius: 5px;
+            font-family: monospace;
+            font-weight: bold;
+        }
+
+        .badge {
+            background: #e0f2fe;
+            color: #0369a1;
+            padding: 4px 8px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: bold;
+            display: inline-block;
+        }
+
+        #liveSearch {
+            margin-top: 20px;
+            padding: 8px;
+            width: 320px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+
+        a.badge { text-decoration: none; }
+        a.badge:hover { background: #bae6fd; }
+    </style>
+</head>
+
+<body>
+
+    <h1>Results found</h1>
+
+    <!-- Formulario backend -->
+    <form class="search-panel">
+        <label>Drug:
+            <input type="text" name="drug" value="{{ drug if drug else '' }}">
+        </label>
+
+        <label>Variant:
+            <input type="text" name="variant" value="{{ variant if variant else '' }}">
+        </label>
+
+        <button type="submit">Buscar</button>
+    </form>
+
+    <p>
+        Searching drugs as:
+        <span class="highlight">{{ drug if drug else 'Cualquiera' }}</span>
+        and variants as:
+        <span class="highlight">{{ variant if variant else 'Cualquiera' }}</span>
+    </p>
+
+    <a href="/">← Volver al buscador</a>
+
+    <!-- 🔎 Buscador en vivo -->
+    <br>
+    <input id="liveSearch" type="text" placeholder="Filtrar resultados en la tabla...">
+
+    <!-- Tabla -->
+    <table id="table-output">
+        <thead>
+            <tr>
+                <th>Drug</th>
+                <th>Variant</th>
+                <th>Phenotype category</th>
+                <th>Illness</th>
+                <th>Evidence</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for res in results %}
+            <tr>
+                <td>{{ res.drugs_drug_name }}</td>
+
+                <td>
+                    <span class="variant">
+                        {{ res.variants_variant_name }}
+                    </span>
+                </td>
+
+                <td>{{ res.phenotype_category_phenotype_category }}</td>
+
+                <td>{{ res.illness_illness_name }}</td>
+
+                <!-- ✅ Evidence CON URL Y NIVEL -->
+                <td>
+                    {% if res.URL_web %}
+                        <a href="{{ res.URL_web }}" target="_blank" rel="noopener noreferrer" class="badge">
+                            {{ res.evidence_category_evidence_category }}
+                            {% if res.evidence_level_evidence_level %}
+                                ({{ res.evidence_level_evidence_level }})
+                            {% endif %}
+                            🔗
+                        </a>
+                    {% else %}
+                        <span class="badge">
+                            {{ res.evidence_category_evidence_category }}
+                            {% if res.evidence_level_evidence_level %}
+                                ({{ res.evidence_level_evidence_level }})
+                            {% endif %}
+                        </span>
+                    {% endif %}
+                </td>
+
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% if not results %}
+        <p>No se han encontrado asociaciones para esa combinación.</p>
+    {% endif %}
+
+    <!-- Gráfico -->
+    <div id="myDiv" style="width:100%; height:400px; margin-top: 30px;"></div>
+
+    <script>
+        $(document).ready(function () {
+            var table = $('#table-output').DataTable({
+                pageLength: 10,
+                language: {
+                    search: "Buscar:",
+                    lengthMenu: "Mostrar _MENU_ filas",
+                    info: "Mostrando _START_ a _END_ de _TOTAL_ resultados",
+                    paginate: {
+                        previous: "Anterior",
+                        next: "Siguiente"
+                    }
+                }
+            });
+
+            // 🔎 filtro en vivo externo
+            $('#liveSearch').on('keyup', function () {
+                table.search(this.value).draw();
+            });
+        });
+    </script>
+
+</body>
+</html>
