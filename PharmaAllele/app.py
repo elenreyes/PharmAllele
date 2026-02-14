@@ -4,6 +4,12 @@ import re
 import uuid
 import subprocess
 
+
+# instalation of flask with pip and connection with DB of mysql
+#   flask: pip install Flask
+#   flask-sqlalchemy: pip install -U Flask-SQLAlchemy
+#   mysql-python connector: conda insta -c conda-forge /or/ pip install pymysql
+
 from flask import Flask, render_template, session, request, url_for, redirect, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import text
@@ -18,11 +24,76 @@ host = "localhost"
 database = "mydb"
 
 # 2. Conexión a la base de datos 'mydb'
-app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+mysqlconnector://{usuario_personalizado}:{password_personalizado}@localhost/mydb'
+app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://{usuario_personalizado}:{password_personalizado}@localhost/mydb'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['TITLE'] = 'Mi Farmacogenética'
+app.config['SECRET_KEY'] = 'my_secret_key'
 
 db = SQLAlchemy(app)
+
+# 3. User log in -> flask-login (instalation: pip install flask-login) (if it not work, try to compare if the routes of the environment are the same or close VSCode/terminal and reload again)
+from werkzeug.security import generate_password_hash, check_password_hash # Password cifrate
+from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
+
+    # Login configuration
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login' #Name function of the login page
+
+    # User mode for SQLALchemy: define the user model in mysql DB
+class User(UserMixin, db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(100), unique=True, nullable=False)
+    password = db.Column(db.String(200), nullable=False)
+#Save the ID in a cookie to keep the user connected till the user close the session
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
+#Create table in mysql if it does not exit yet
+with app.app_context():
+    db.create_all()
+# Register route: if the email is already in the DB, cifrate the password, save the email and password
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        email =request.form.get('email')
+        password = request.form.get('password')
+        
+        # Verificate if it already exist
+        user = User.query.filter_by(email=email).first()
+        if user:
+            return "El email ya está registrado"
+        
+        # Create new user with cifrated password
+        new_user = User(email=email, password=generate_password_hash(password, method='pbkdf2:sha256'))
+        db.session.add(new_user)
+        db.session.commit()
+        return redirect(url_for('login'))
+        
+    return render_template('register.html')
+# Log in route: search the user per email, check the password and enter the session
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        email = request.form.get('email')
+        password = request.form.get('password')
+        user = User.query.filter_by(email=email).first()
+        
+        if user and check_password_hash(user.password, password):
+            login_user(user)
+            return redirect(url_for('index'))
+        else:
+            return "Login incorrecto"
+            
+    return render_template('login.html')
+
+# Log out route
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('index'))
+
 
 # 3. Tu primera RUTA (La página de inicio)
 @app.route('/')
@@ -31,7 +102,7 @@ def index():
     result = db.session.execute(text("SELECT COUNT(*) FROM gene"))
     total = result.fetchone()[0]
     
-    return render_template('index.html', cantidad=total)
+    return render_template('new_index.html', cantidad=total)
 
 # 4. 2º RUTA: BUSCAR DRUGS
 @app.route('/drugs')
@@ -49,7 +120,7 @@ def listar_drugs():
     datos = result.fetchall()
     
     # 4. Enviamos todo al nuevo HTML
-    return render_template('drugs.html', columnas=columnas, filas=datos, title="Listado de Fármacos")
+    return render_template('new_drug.html', columnas=columnas, filas=datos, title="Drug List")
 
 @app.route('/buscar_drugs', methods=['GET','POST'])
 def buscar_drug():
@@ -68,7 +139,7 @@ def buscar_drug():
     #datos = result.fetchall()
     
     # 4. Reutilizamos el mismo HTML de la tabla para mostrar el resultado
-    return render_template('drugs.html', columnas=columnas, filas=datos, title=f"Resultados para: {termino}")
+    return render_template('new_drug.html', columnas=columnas, filas=datos, title=f"Resultados para: {termino}")
 
 #5. 3º RUTA: BUSCAR GENES
 @app.route('/buscar_genes', methods=['POST'])
@@ -78,7 +149,7 @@ def buscar_gene():
     result = db.session.execute(query, {"nombre": f"%{termino}%"})
     columnas = result.keys()
     datos = result.fetchall()
-    return render_template('genes.html', columnas=columnas, filas=datos, title=f"Resultados para: {termino}")
+    return render_template('new_genes.html', columnas=columnas, filas=datos, title=f"Resultados para: {termino}")
 
 
 #6. 4º RUTA: BuSQUEDA farmaco - variantes asociadas 
@@ -105,7 +176,7 @@ def mostrar_detalles_drug(nombre_farmaco):
     listado_variantes = res_variantes.fetchall()
 
     return render_template(
-        'detalles_drug.html', 
+        'new_detalles_drug.html', 
         droga=info_droga, 
         variantes=listado_variantes,
         title=f"Detalles de {nombre_farmaco}"
@@ -113,6 +184,7 @@ def mostrar_detalles_drug(nombre_farmaco):
 
 #7. 5º RUTA: Busqueda DOBLE (Farmaco y variante a la vez)
 @app.route('/search')
+@login_required     #only register user could do the search
 def search():
     # 1. Obtenemos los términos de búsqueda del formulario
     drug_query = request.args.get("drug", "").strip()
@@ -149,7 +221,7 @@ def search():
         return jsonify(results)
     
     # Si es una búsqueda normal, enviamos el HTML de siempre
-    return render_template("results.html", results=results, drug=drug_query, variant=variant_query)
+    return render_template("new_results.html", results=results, drug=drug_query, variant=variant_query)
 
 
 #7. 6º RUTA: Busqueda de Evidence-Category
@@ -168,7 +240,7 @@ def detalle_evidencia(category_name):
     if not info_evidencia:
         return "Categoría de evidencia no encontrada", 404
 
-    return render_template("detalles_evidencia.html", evidencia=info_evidencia)
+    return render_template("new_detalles_evidencia.html", evidencia=info_evidencia)
 
 #La app va encima de esto
 if __name__ == '__main__':
