@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Drug List</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <header><h1>Pharmacogenetic Drugs</h1></header>
+    <div class="container">
+        <input type="text" id="quickSearch" placeholder="🔍 Search drug by name...">
+        <div class="drugs-list-container" id="drugList">
+            {% for fila in filas %}
+                <a href="/drugs/{{ fila['drug_name'] }}" class="drug-item">{{ fila['drug_name'] }}</a>
+            {% endfor %}
+        </div>
+    </div>
+    <script>
+        $(document).ready(function() {
+            $('#quickSearch').on('keyup', function() {
+                var value = $(this).val().toLowerCase();
+                $("#drugList a").filter(function() { $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1) });
+            });
+        });
+    </script>
+</body>
+</html>
