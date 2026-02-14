@@ -2,47 +2,48 @@
 <html>
 <head>
     <title>{{ title }}</title>
-    <style>
-        table { border-collapse: collapse; width: 100%; font-family: sans-serif; }
-        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-        th { background-color: #f2f2f2; }
-        tr:nth-child(even) { background-color: #f9f9f9; }
-        tr:hover { background-color: #f1f1f1; }
-    </style>
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css">
+    <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style_results.css') }}">
 </head>
 <body>
-    <h1>{{ title }}</h1>
-    <a href="/">← Volver al inicio</a>
-    <br><br>
-    
-    <table>
-        <thead>
-            <tr>
-                {# 1. Bucle para las cabeceras #}
-                {% for col in columnas %}
-                    <th>{{ col }}</th>
-                {% endfor %}
-            </tr>
-        </thead>
-        <tbody>
-            {# 2. Bucle para las FILAS #}
+
+    <header>
+        <h1>{{ title }}</h1>
+    </header>
+
+    <div class="container">
+
+        <input type="text" id="quickSearch" placeholder="🔍 Buscar fármaco por nombre entre los {{ filas|length }} resultados...">
+
+        <div class="drugs-list-container" id="drugList">
             {% for fila in filas %}
-            <tr>
-                {# 3. Bucle para las COLUMNAS de cada fila #}
-                {% for col_name in columnas %}
-                <td>
-                    {% if col_name == 'drug_name' %}
-                        {# Si la columna es el nombre, ponemos el enlace #}
-                        <a href="/drugs/{{ fila[col_name] }}">{{ fila[col_name] }}</a>
-                    {% else %}
-                        {# Si no, mostramos el dato normal #}
-                        {{ fila[col_name] }}
-                    {% endif %}
-                </td>
-                {% endfor %} {# Cierre del bucle de columnas (3) #}
-            </tr>
-            {% endfor %} {# Cierre del bucle de filas (2) #}
-        </tbody>
-    </table>
+                {# Usamos el nombre de la columna 'drug_name' #}
+                <a href="/drugs/{{ fila['drug_name'] }}" class="drug-item">
+                     {{ fila['drug_name'] }}
+                </a>
+            {% endfor %}
+        </div>
+
+        {% if not filas %}
+            <p>No se encontraron fármacos en la base de datos.</p>
+        {% endif %}
+
+    </div>
+
+
+    <script>
+        $(document).ready(function() {
+            $('#quickSearch').on('keyup', function() {
+                var value = $(this).val().toLowerCase();
+                $("#drugList a").filter(function() {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+        });
+    </script>
 </body>
 </html>

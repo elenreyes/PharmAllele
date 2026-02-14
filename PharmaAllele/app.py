@@ -12,18 +12,12 @@ from sqlalchemy import text
 app = Flask(__name__)
 
 # 1.2 Configuración de los datos de acceso
-<<<<<<< HEAD
-usuario_personalizado = "msotmon"  
-password_personalizado = "Msotmon.2003"      
-=======
-usuario_personalizado = "root"  
-password_personalizado = "contraseña_mys_mysql"      
->>>>>>> 1d022aef7b1d6a7efb0ff8af935d181be9a5c743
+usuario_personalizado = sys.argv[1]  
+password_personalizado = sys.argv[2]     
 host = "localhost"
 database = "mydb"
 
-# 2. Conexión a TU base de datos 'mydb'
-# Pon tu contraseña real de MySQL aquí
+# 2. Conexión a la base de datos 'mydb'
 app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+mysqlconnector://{usuario_personalizado}:{password_personalizado}@localhost/mydb'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['TITLE'] = 'Mi Farmacogenética'
@@ -44,7 +38,7 @@ def index():
 def listar_drugs():
     # 1. Hacemos la consulta a la tabla 'drug'
     # Nota: Asegúrate de que en tu MySQL la tabla se llame 'drugs'
-    result = db.session.execute(text("SELECT * FROM drugs LIMIT 100"))
+    result = db.session.execute(text("SELECT * FROM drugs"))
     #CONSEJO: Si la tabla drug tiene miles de filas, el navegador podría tardar un poco en cargar. 
     # Si ves que tarda mucho, puedes cambiar la consulta a SELECT * FROM drug LIMIT 100 para probar.
 
