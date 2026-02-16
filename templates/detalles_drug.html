@@ -2,43 +2,86 @@
 <html>
 <head>
     <title>Detalles de {{ droga.drug_name }}</title>
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css">
+    <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style_results.css') }}">
+    
     <style>
-        body { font-family: Arial; margin: 20px; }
-        .info-box { background: #eef; padding: 15px; border-radius: 5px; margin-bottom: 20px; }
-        table { width: 100%; border-collapse: collapse; }
-        th, td { border: 1px solid #ccc; padding: 10px; text-align: left; }
-        th { background: #333; color: white; }
+        /* Estilos específicos para la caja de información del fármaco */
+        .info-box { 
+            background: #f8fafc; 
+            padding: 20px; 
+            border-radius: 8px; 
+            border-left: 5px solid #3b82f6;
+            margin-bottom: 30px; 
+        }
+        .info-box h2 { margin-top: 0; color: #1e40af; }
+        .description-text { line-height: 1.6; color: #475569; }
     </style>
 </head>
 <body>
-    <a href="/drugs">← Volver al listado completo</a>
 
-    <div class="info-box">
-        <h1>Drug: {{ droga.drug_name }}</h1>
-        <p><strong>Description:</strong> {{ droga.description }}</p>
+    <header>
+        <h1>Drug Details: {{ droga.drug_name }}</h1>
+    </header>
+
+    <div class="container">
+        <div class="info-box">
+            <h2>More Information</h2>
+            <p>
+                <strong>External Resource:</strong> 
+                <a href="https://pubchem.ncbi.nlm.nih.gov/#query={{ droga.drug_name }}" 
+                target="_blank" 
+                class="badge" 
+                style="background-color: #f59e0b; color: white; padding: 8px 15px; border-radius: 20px; text-decoration: none; font-weight: bold;">
+                View {{ droga.drug_name }} on PubChem 
+                </a>
+            </p>
+        </div>
+
+        <h2>Associated Genetic Variants</h2>
+        
+        {% if variantes %}
+        <table id="table-variants" class="display">
+            <thead>
+                <tr>
+                    <th>Variant Name</th>
+                    <th>Gene</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for v in variantes %}
+                <tr>
+                    <td>
+                        <span class="variant">
+                            {{ v.variant_name }}
+                        </span>
+                    </td>
+                    <td>{{ v.gene_gene_name }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>No hay variantes registradas para este fármaco.</p>
+        {% endif %}
+
     </div>
 
-    <h2>Associated genetic variants</h2>
-    
-    {% if variantes %}
-    <table>
-        <thead>
-            <tr>
-                <th>Variant (ID)</th>
-                <th>Gene</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for v in variantes %}
-            <tr>
-                <td>{{ v.variant_name }}</td>
-                <td>{{ v.gene_gene_name }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    {% else %}
-    <p>No hay variantes registradas para este fármaco.</p>
-    {% endif %}
+    <script>
+        $(document).ready(function () {
+            // Activamos DataTables para que la tabla de variantes tenga el mismo estilo profesional
+            $('#table-variants').DataTable({
+                pageLength: 10,
+                searching: false, // Desactivamos búsqueda si son pocas variantes
+                language: {
+                    info: "Showing _TOTAL_ variants"
+                }
+            });
+        });
+    </script>
 </body>
 </html>

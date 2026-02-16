@@ -33,7 +33,8 @@ window.addEventListener('DOMContentLoaded', event => {
                             item.drugs_drug_name,
                             item.variants_variant_name,
                             item.phenotype_category_phenotype_category,
-                            item.illness_illness_name
+                            item.illness_illness_name,
+                            item.evidence_category_evidence_category
                         ]);
                     });
                     table.draw();
