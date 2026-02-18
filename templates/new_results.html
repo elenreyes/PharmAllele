@@ -13,7 +13,7 @@
     <div class="container">
         <p>Drugs: <span class="highlight">{{ drug if drug else 'Any' }}</span> | Variants: <span class="highlight">{{ variant if variant else 'Any' }}</span></p>
         <table id="table-output">
-            <thead><tr><th>Drug</th><th>Variant</th><th>Phenotype</th><th>Illness</th><th>Evidence</th></tr></thead>
+            <thead><tr><th>Drug</th><th>Variant</th><th>Phenotype</th><th>Illness</th><th>Evidence</th><th>Scientific Articles</th></tr></thead>
             <tbody>
                 {% for res in results %}
                 <tr>
@@ -32,11 +32,13 @@
                             <small>ℹ️</small>
                         </span>
                     </td>
+                    <td>
+                      <a href="{{ url_for('evidencia_articulos', id_annotation=res.id_annotation) }}" class="badge"> Ver Evidencia (PMID)</a>
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
-        <div id="myDiv" class="card" style="height:400px; margin-top: 2rem;"></div>
     </div>
     <script>$(document).ready(function(){ $('#table-output').DataTable(); });</script>
 </body>

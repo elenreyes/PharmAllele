@@ -200,7 +200,7 @@ def search():
     # 2. Construimos la consulta SQL con un JOIN
     # Buscamos en la tabla intermedia que conecta ambos
     sql = """
-        SELECT dv.drugs_drug_name, dv.variants_variant_name, dv.phenotype_category_phenotype_category, dv.illness_illness_name, dv.evidence_category_evidence_category,dv.URL_web
+        SELECT dv.id_annotation,dv.drugs_drug_name, dv.variants_variant_name, dv.phenotype_category_phenotype_category, dv.illness_illness_name, dv.evidence_category_evidence_category,dv.URL_web
         FROM variants_has_drugs dv
         JOIN variants v ON dv.variants_variant_name = v.variant_name
         WHERE 1=1
@@ -248,6 +248,39 @@ def detalle_evidencia(category_name):
         return "Categoría de evidencia no encontrada", 404
 
     return render_template("new_detalles_evidencia.html", evidencia=info_evidencia)
+
+
+#8. 7º RUTA: Relacion id-annotation con id-evidence
+@app.route("/evidencia_articulos/<int:id_annotation>")
+@login_required
+def evidencia_articulos(id_annotation):
+    # 1. Consulta para obtener los artículos relacionados mediante el ID de anotación
+    # Usamos un JOIN o un filtro directo si tenemos la FK en la tabla PMID
+    sql = """
+        SELECT id_evidence, summary_text, URL_articulos 
+        FROM PMID 
+        WHERE variants_has_drugs_id_annotation = :id_annot
+    """
+    
+    result = db.session.execute(text(sql), {"id_annot": id_annotation})
+    columnas = result.keys()
+    articulos = [dict(zip(columnas, fila)) for fila in result.fetchall()]
+
+    # 2. También podemos traer el nombre del fármaco/variante para el título (opcional pero recomendado)
+    info_extra = db.session.execute(text("""
+        SELECT drugs_drug_name, variants_variant_name 
+        FROM variants_has_drugs 
+        WHERE id_annotation = :id_annot
+    """), {"id_annot": id_annotation}).fetchone()
+
+    if not articulos:
+        # Si no hay artículos, podrías enviar una lista vacía o un error
+        pass
+
+    return render_template("evidencia_articulos.html", 
+                           articulos=articulos, 
+                           info=info_extra,
+                           id_annot=id_annotation)
 
 #La app va encima de esto
 if __name__ == '__main__':

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Evidence Articles - PMID</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css">
+    <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style_results.css') }}">
+</head>
+<body>
+
+    <header>
+        <h1>Scientific Evidence (PMID)</h1>
+    </header>
+
+    <div class="container">
+        <br><br>
+
+        {% if info %}
+            <p>Showing articles for: 
+               <span class="highlight">{{ info.drugs_drug_name }}</span> - 
+               <span class="variant">{{ info.variants_variant_name }}</span>
+            </p>
+        {% endif %}
+
+        <table id="table-pmid" class="display">
+            <thead>
+                <tr>
+                    <th>ID Evidence</th>
+                    <th>Summary / Abstract</th>
+                    <th>Link to Article</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for art in articulos %}
+                <tr>
+                    <td><span class="badge">{{ art.id_evidence }}</span></td>
+                    <td style="font-size: 0.9rem; line-height: 1.4;">{{ art.summary_text }}</td>
+                    <td>
+                        {% if art.URL_articulos %}
+                            <a href="https://pubmed.ncbi.nlm.nih.gov/{{ art.URL_articulos }}/" 
+                                target="_blank" 
+                                class="badge" 
+                                style="background-color: #004d99; color: white; padding: 6px 12px; border-radius: 15px; text-decoration: none;">
+                                PMID: {{ art.URL_articulos }}
+                            </a>
+                        {% else %}
+                            No PMID available
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        {% if not articulos %}
+            <div class="info-box" style="border-left-color: #ef4444;">
+                <p>No se han encontrado artículos científicos para esta anotación (ID: {{ id_annot }}).</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            $('#table-pmid').DataTable({
+                pageLength: 5,
+                language: {
+                    search: "Filter text:",
+                    info: "Showing _TOTAL_ evidence articles"
+                }
+            });
+        });
+    </script>
+</body>
+</html>
