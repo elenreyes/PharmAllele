@@ -21,7 +21,17 @@
                     <td><span class="variant">{{ res.variants_variant_name }}</span></td>
                     <td>{{ res.phenotype_category_phenotype_category }}</td>
                     <td>{{ res.illness_illness_name }}</td>
-                    <td><a href="{{ res.URL_web }}" target="_blank" class="badge">{{ res.evidence_category_evidence_category }} 🔗</a></td>
+                    <td>
+                        {% set desc = glosario.get(res.evidence_category_evidence_category, "Sin descripción disponible") %}
+    
+                        <span class="badge" title="{{ desc }}" style="cursor: help;">
+                            {{ res.evidence_category_evidence_category }}
+                            {% if res.evidence_level_evidence_level %}
+                                ({{ res.evidence_level_evidence_level }})
+                            {% endif %}
+                            <small>ℹ️</small>
+                        </span>
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>

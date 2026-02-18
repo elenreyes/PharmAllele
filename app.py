@@ -191,6 +191,12 @@ def search():
     drug_query = request.args.get("drug", "").strip()
     variant_query = request.args.get("variant", "").strip()
 
+    # --- NUEVO: Obtener el glosario de evidencias ---
+    evidencias_raw = db.session.execute(text("SELECT evidence_category, evidence_description FROM evidence_category")).fetchall()
+    # Lo convertimos en un diccionario: {'1A': 'Descripción...', '2B': '...'}
+    glosario_evidencia = {row[0]: row[1] for row in evidencias_raw}
+
+
     # 2. Construimos la consulta SQL con un JOIN
     # Buscamos en la tabla intermedia que conecta ambos
     sql = """
@@ -222,7 +228,7 @@ def search():
         return jsonify(results)
     
     # Si es una búsqueda normal, enviamos el HTML de siempre
-    return render_template("new_results.html", results=results, drug=drug_query, variant=variant_query)
+    return render_template("new_results.html", results=results, drug=drug_query, variant=variant_query, glosario=glosario_evidencia)
 
 
 #7. 6º RUTA: Busqueda de Evidence-Category

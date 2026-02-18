@@ -93,3 +93,9 @@ table td, table th { border: 1px solid var(--border); padding: 10px; }
 }
 
 footer { margin-top: 3rem; text-align: center; color: var(--text-secondary); padding: 2rem; border-top: 1px solid var(--border); }
+
+/* --- Panel negro con la información de Level Evidence --- */
+.badge[title] {
+    border-bottom: 1px dotted #0369a1; /* Una línea punteada debajo */
+    position: relative;
+}
