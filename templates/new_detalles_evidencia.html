@@ -5,7 +5,12 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-    <div class="container">
+    <div class="container"></div>
+        <div class="top-nav">
+            <a href="javascript:history.back()" class="back-link">← Back</a>
+            <a href="/" class="logo-nav">PharmAllele</a>
+        </div>
+    
         <a href="javascript:history.back()" class="btn">← Go Back</a>
         <div class="info-card" style="margin-top: 2rem;">
             <h1>Level: {{ evidencia.evidence_category }}</h1>

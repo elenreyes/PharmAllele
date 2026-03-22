@@ -6,15 +6,19 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css">
     <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='style_results.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-
-    <header>
-        <h1>Scientific Evidence (PMID)</h1>
-    </header>
-
     <div class="container">
+        <div class="top-nav">
+            <a href="javascript:history.back()" class="back-link">← Back</a>
+            <a href="/" class="logo-nav">PharmAllele</a>
+        </div>
+        <header>
+            <h1>Scientific Evidence (PMID)</h1>
+        </header>
+    
+    
         <br><br>
 
         {% if info %}

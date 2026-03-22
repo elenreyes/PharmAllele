@@ -1,21 +1,27 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Gene List</title>
+    <title>Variant List</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
-    <header><h1>Gene List</h1></header>
+    <header><h1>Pharmacogenetic Variants</h1></header>
     <div class="container">
-        <a href="/" class="btn">← Back to Home</a>
-        <table>
-            <thead><tr>{% for col in columnas %}<th>{{ col }}</th>{% endfor %}</tr></thead>
-            <tbody>
-                {% for fila in filas %}
-                <tr>{% for valor in fila %}<td>{{ valor }}</td>{% endfor %}</tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        <input type="text" id="quickSearch" placeholder="🔍 Search variant by name...">
+        <div class="drugs-list-container" id="drugList">
+            {% for fila in filas %}
+                <a href="/listar_genes/{{ fila['variant_name'] }}" class="drug-item">{{ fila['variant_name'] }}</a>
+            {% endfor %}
+        </div>
     </div>
+    <script>
+        $(document).ready(function() {
+            $('#quickSearch').on('keyup', function() {
+                var value = $(this).val().toLowerCase();
+                $("#drugList a").filter(function() { $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1) });
+            });
+        });
+    </script>
 </body>
 </html>

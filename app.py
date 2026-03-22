@@ -104,7 +104,7 @@ def index():
     
     return render_template('new_index.html', cantidad=total)
 
-# 4. 2º RUTA: BUSCAR DRUGS
+# 4. 2º RUTA: LISTAR DRUGS
 @app.route('/drugs')
 @login_required
 def listar_drugs():
@@ -142,16 +142,40 @@ def buscar_drug():
     # 4. Reutilizamos el mismo HTML de la tabla para mostrar el resultado
     return render_template('new_drug.html', columnas=columnas, filas=datos, title=f"Resultados para: {termino}")
 
-#5. 3º RUTA: BUSCAR GENES
-@app.route('/buscar_genes', methods=['POST'])
-def buscar_gene():
-    termino = request.form.get('nombre_gen')
-    query = text("SELECT * FROM gene WHERE gene_name LIKE :nombre")
-    result = db.session.execute(query, {"nombre": f"%{termino}%"})
-    columnas = result.keys()
+#5. 3º RUTA: LISTAR VARIANTES - GENES
+@app.route('/variants')
+@login_required
+def listar_variants():
+    result = db.session.execute(text("SELECT variant_name FROM variants"))
     datos = result.fetchall()
-    return render_template('new_genes.html', columnas=columnas, filas=datos, title=f"Resultados para: {termino}")
+    return render_template('new_variants.html', filas=datos, title="Variant List")
 
+# 6. DETALLES DE UNA VARIANTE (Equivalente a mostrar_detalles_drug)
+@app.route('/variants/<string:nombre_variante>')
+@login_required
+def mostrar_detalles_variant(nombre_variante):
+    # 1. Obtenemos la información básica de la variante (y su gen)
+    res_variant = db.session.execute(
+        text("SELECT * FROM variants WHERE variant_name = :nombre"), 
+        {"nombre": nombre_variante})
+    info_variante = res_variant.fetchone()
+
+    if not info_variante:
+        return "Variante no encontrada", 404
+
+    # 2. Buscamos los FÁRMACOS asociados a esta variante específica
+    # Unimos con la tabla intermedia 'variants_has_drugs'
+    query_drugs = text("""
+        SELECT d.drug_name 
+        FROM drugs d
+        JOIN variants_has_drugs vhd ON d.drug_name = vhd.drugs_drug_name
+        WHERE vhd.variants_variant_name = :nombre
+    """)
+    res_drugs = db.session.execute(query_drugs, {"nombre": nombre_variante})
+    listado_farmacos = res_drugs.fetchall()
+
+    return render_template(
+        'new_detalles_variants.html', variante=info_variante, farmacos=listado_farmacos, title=f"Detalles de {nombre_variante}")
 
 #6. 4º RUTA: BuSQUEDA farmaco - variantes asociadas 
 @app.route('/drugs/<string:nombre_farmaco>')

@@ -7,7 +7,7 @@
     --text-muted: #9ca3af;
     --border: #e5e7eb;
     --background: #ffffff;
-    --background-secondary: #E0F2F7;
+    --background-secondary: #d6dff0c8;
     --radius: 0.5rem;
     --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
 }
@@ -21,9 +21,58 @@ body {
     line-height: 1.6;
     min-height: 100vh;
 }
+
+body.home-page {
+    background-image: linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)), 
+                      url('img/fondo_inicio.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+}
+
 .container { max-width: 1200px; margin: 0 auto; padding: 2rem 1rem; }
 
 /* --- CABECERA --- */
+/* El contenedor de la barra superior */
+.top-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+/* El estilo del enlace de PharmAllele */
+.logo-nav {
+    text-decoration: none;
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    color: var(--text-primary);
+    font-size: 1.5rem;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+    opacity: 0.75;
+}
+
+.logo-nav:hover {
+    color: #0d2592; /* Color lila al pasar el ratón */
+}
+
+/* El botón de volver */
+.back-link {
+    text-decoration: none;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.back-link:hover {
+    color: var(--primary);
+}
+
 header {
     background-color: white; /* Header profesional blanco */
     border-bottom: 1px solid var(--border);
@@ -52,9 +101,13 @@ table.dataTable, table {
     margin-top: 1rem;
 }
 table thead th { 
-    background: linear-gradient(90deg, #3b82f6, #7c3aed) !important; 
-    color: white !important; 
-    padding: 12px !important;
+    background-color: #c6d3df !important; 
+    color: var(--text-primary) !important;
+    padding: 16px 12px !important;
+    font-weight: 700;
+    border-top: 3px solid var(--primary) !important; /* Acento arriba */
+    border-bottom: 1px solid var(--border) !important;
+    text-transform: none;
 }
 table td, table th { border: 1px solid var(--border); padding: 10px; }
 
@@ -74,6 +127,10 @@ table td, table th { border: 1px solid var(--border); padding: 10px; }
     font-weight: 500;
     border: 1px solid var(--border);
     transition: 0.2s;
+    white-space: nowrap;       
+    overflow: hidden;          
+    text-overflow: ellipsis;   
+    display: block;            
 }
 .drug-item:hover { background: var(--primary); color: white; }
 
