@@ -281,7 +281,7 @@ def evidencia_articulos(id_annotation):
     # 1. Consulta para obtener los artículos relacionados mediante el ID de anotación
     # Usamos un JOIN o un filtro directo si tenemos la FK en la tabla PMID
     sql = """
-        SELECT id_evidence, summary_text, URL_articulos 
+        SELECT id_evidence, summary_text, PMID 
         FROM PMID 
         WHERE variants_has_drugs_id_annotation = :id_annot
     """
