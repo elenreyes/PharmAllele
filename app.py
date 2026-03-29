@@ -18,15 +18,16 @@ from sqlalchemy import text
 app = Flask(__name__)
 
 # 1.2 Configuración de los datos de acceso
-usuario_personalizado = sys.argv[1]  
-password_personalizado = sys.argv[2]     
-host = "localhost"
-database = "mydb"
+#usuario_personalizado = sys.argv[1]  
+#password_personalizado = sys.argv[2]     
+#host = "localhost"
+#database = "mydb"
 
+from config import MYSQL_USER, MYSQL_PASSWORD, MYSQL_HOST, MYSQL_DB, SECRET_KEY, TITLE, PREFIX
 # 2. Conexión a la base de datos 'mydb'
-app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://{usuario_personalizado}:{password_personalizado}@localhost/mydb'
+app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://{MYSQL_USER}:{MYSQL_PASSWORD}@{MYSQL_HOST}/{MYSQL_DB}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['TITLE'] = 'Mi Farmacogenética'
+app.config['TITLE'] = 'My pharmacokinetic'
 app.config['SECRET_KEY'] = 'my_secret_key'
 
 db = SQLAlchemy(app)
@@ -62,7 +63,7 @@ def register():
         # Verificate if it already exist
         user = User.query.filter_by(email=email).first()
         if user:
-            return "El email ya está registrado"
+            return "Your email has been registered"
         
         # Create new user with cifrated password
         new_user = User(email=email, password=generate_password_hash(password, method='pbkdf2:sha256'))
@@ -83,7 +84,7 @@ def login():
             login_user(user)
             return redirect(url_for('index'))
         else:
-            return "Login incorrecto"
+            return "Incorrect login"
             
     return render_template('login.html')
 

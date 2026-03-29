@@ -24,7 +24,7 @@ body {
 
 body.home-page {
     background-image: linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)), 
-                      url('img/fondo_inicio.jpg');
+                      url('/Pharmallele/static/img/fondo_inicio.jpg');
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
